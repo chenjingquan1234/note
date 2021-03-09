@@ -32,6 +32,39 @@ var removeDuplicates = function (nums) {
 // 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
 
 const prices = [7, 1, 5, 3, 6, 4]
+
+
+//第一种解，使用贪心算法，因为题目是不能参与躲避交易，所以可以是当日买入然后卖出，假设最大情况是第一天买入，然后最后一天卖出，则结果就是maxProfit = Pn - P0可以拆分成 maxProfit = (p1 - p0) + (p2 - p1) ... (pn - pn-1)
+
+var maxProfit = function(prices) {
+    if(!prices.length) return
+    let max = 0
+    for(let i = 1; i < prices.length; i++) {
+        if(prices[i] > prices[i - 1]) {
+            max += prices[i] - prices[i - 1]
+        }
+    }
+    return max
+}
+
+
+//第二种解法，用动态规划的方式，动态规划一般分为三步，
+//1，定义动态转移方程2，初始化状态。3，写代码递推实现转移方程
+// 这道题随着i变化，每天只有2种状态，一种是持有股票，一种是没有持有股票，
+// 前一天可能是有或无，则今天无的情况有 dp[i][0]=max{dp[i−1][0],dp[i−1][1]+prices[i]}  
+// 前一天可能是有或无，则今天有的情况有 dp[i][1]=max{dp[i−1][1],dp[i−1][0]−prices[i]} 
+// 最后最大收益肯定是无的 所以最后返回dp0
+
+var maxProfit = function (prices) {
+    let dp0 = 0, dp1 = -prices[0]
+    for (let i = 1; i < prices.length; i++) {
+        dp0 = Math.max(dp0, dp1 + prices[i])
+        dp1 = Math.max(dp1, dp0 - prices[i])
+    }
+    return dp0
+}
+
+
 ```
 
 
@@ -53,5 +86,6 @@ var rotate = function (nums, k) {
         nums[0] = temp
     }
 };
+
 ```
 
